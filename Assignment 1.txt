@@ -1,0 +1,157 @@
+TRIGGER FILES
+1)Create a field on Account called “is_gold”, checkbox, default off When Amount field on Opportunity  is greater than $20k, mark is_gold to TRUE.
+trigger isgold on Opportunity (after insert,after update) {
+    for(Opportunity op: Trigger.New){
+        for(Account ac:[select Id,is_gold__c from Account where Id=:op.AccountId])
+        {
+            if(op.Amount>20000)
+            {
+                ac.is_gold__c=True;
+                update ac;
+            }
+            else
+            {
+                ac.is_gold__c=False;
+                update ac;
+            }
+        }
+    }
+}
+2)Create a field on Contact called Profile, text, 255 When an Account is updated and the Website is filled in, update all the Profile field on all Contacts to:
+Profile = Website + ‘/’ + First Letter of First Name + Last Name
+trigger Profile on Account (after insert,after update) {
+    List<Contact> Contacts = [select id,Profile__c,AccountId from Contact where AccountId in :Trigger.New];
+    for(Account ac:Trigger.New)
+    {
+        if(ac.Website!=null)
+        {
+          for(Contact con:Contacts)
+          {
+              if(con.AccountId==ac.Id){
+                  con.Profile__c=ac.Website+'/'+ac.First_Name__c.substring(0,1)+ac.Last_Name__c;
+                  update con;
+              }
+          }
+        }
+    }
+
+}
+3)Create a field on Account called “Only_Default_Contact”, checkbox, default off	When a new Account is created, create a new Contact that has the following data points:
+First Name = “Info”
+Last Name = “Default”
+Email = “info@websitedomain.tld”
+Only_Default_Contact = TRUE
+When the Account has more than 1 Contact, update Only_Default_Contact to FALSE.
+		trigger NewContact on Account (before insert) {
+for(Account ac:Trigger.New)
+{
+    for(List<Contact>OldCon:[select Id,Name from Contact where AccountId=:ac.Id])
+    {
+        if(OldCon.size()==0)
+        {
+            Contact NewCon = new Contact(FirstName='Info',LastName='Default',Email='info@websitedomain.tid',AccountId=ac.Id);
+            insert NewCon;
+        }
+    }
+}
+}
+
+
+______________________________________________________________
+
+trigger UpdateAccount on Contact (after insert) {
+    for(Contact con: Trigger.New)
+    {
+        for(Account Acc:[select Id, Name from Account where Id=:con.AccountId])
+        {
+            for(List<Contact> Con1: [select Id, Name from Contact where AccountId=:Acc.Id])
+            {
+                if(Con1.size()==1)
+                {
+                    Acc.Only_Default_Contact__c=true;
+                    update Acc;
+                }
+                else If(Con1.size()>1)
+                {
+                    Acc.Only_Default_Contact__c=false;
+                    update Acc;
+                }
+            }
+        }
+    }
+
+}	
+
+
+CLASS FILES
+
+1)@isTest
+public class GoldClass {
+@isTest
+    public static void IsGoldTrue()
+    {
+        
+        Account ac=new Account(Name='Isgold Test Class',First_Name__c='IsGold',Last_Name__c='One');
+        insert ac;
+        Opportunity opp=new Opportunity(Name='Test Class 1',AccountId=ac.Id,CloseDate=Date.newInstance(2020, 09, 26),Amount=20000,StageName='Prospecting');
+        insert opp;
+        Test.startTest();
+        opp.Amount=675645;
+        Update opp;
+        Test.stopTest();
+        
+    }
+}
+2)@isTest
+public class Contactclass {
+    @isTest private static void CreateDefaultContact()
+    {
+        Account Acc=new Account(Name='Contact Test',First_Name__c='Swetha',Last_Name__c='Sekar');
+        insert Acc;
+    }
+}
+
+3.1)@isTest
+public class ProfileUpdateclass {
+    @isTest
+    private static void ProfileUpdate(){
+        Account oldAcc = new Account(Name='Profile account One',First_Name__c='Swetha',Last_Name__c='Sekar');
+        insert oldAcc;
+        Contact oldCon=new Contact(FirstName='Subash',LastName='Sambath',AccountId=oldAcc.Id);
+        insert oldCon;
+        Test.startTest();
+        oldAcc.Website='www.gmail.com';
+        update oldAcc;
+        Test.stopTest();
+        
+    }
+    @isTest
+    private static void ProfileNotUpdate(){
+        Account newAcc = new Account(Name='Test Account Two',First_Name__c='Kiruba',Last_Name__c='Sekar');
+        insert newAcc;
+        Contact newCon=new Contact(FirstName='Anu',LastName='Raj',AccountId=newAcc.Id);
+        insert newCon;
+        Test.startTest();
+        System.assertEquals(null, newCon.Profile__c);
+        Test.stopTest();
+        
+    }
+}
+3.2)@isTest
+public class UpdateAccountClass{
+    @isTest private static void ContactTrue()
+    {
+        Account oldAcc=new Account(Name='Account Test class 1',First_Name__c='Subash',Last_Name__c='sambath');
+        insert oldAcc;
+    }
+    @isTest private static void ContactFalse()
+    {
+        Account newAcc=new Account(Name='Account Test class 2',First_Name__c='Revathi',Last_Name__c='Sekar');
+        insert newAcc;
+        Contact Con=new Contact(FirstName='Bala',LastName='Kumar',AccountId=newAcc.Id);
+        insert Con;
+    }
+}
+
+		
+	
