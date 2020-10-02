@@ -1,0 +1,21 @@
+<apex:page standardStylesheets="false" showHeader="false" controller="RetriveCustomer" renderAs="pdf">
+    
+    <div style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">
+        <h2>Order Details</h2>   
+        
+        <table style="border-collapse: collapse;width: 100%;">
+            <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">
+                <th>Customer Name</th>
+                <th>Product Price</th>
+                <th>Total Price</th>
+            </tr> 
+            <apex:repeat value="{!orderList}" var="acc">
+                <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">{!acc.Customer_Name__c}</td>
+                    <td style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">{!acc.Product_Price__c}</td>
+                    <td style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">{!acc.Total_Cost__c}</td>     
+                </tr>
+            </apex:repeat>    
+        </table>  
+    </div>
+</apex:page>
