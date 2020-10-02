@@ -1,15 +1,28 @@
 import { LightningElement, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import NAME_FIELD from '@salesforce/schema/Customer__c.Name';
-import PHONE_FIELD from '@salesforce/schema/Customer__c.Phone__c';
-import EMAIL_FIELD from '@salesforce/schema/Customer__c.Email__c';
-import PRODUCT from '@salesforce/schema/Customer__c.Product_Name__c';
-import ADDRESS from '@salesforce/schema/Customer__c.Address__c';
+import Name from '@salesforce/schema/Customer__c.Name';
+import Phone from '@salesforce/schema/Customer__c.Phone__c';
+import Email from '@salesforce/schema/Customer__c.Email__c';
+import Product from '@salesforce/schema/Customer__c.Product_Name__c';
+import Street from '@salesforce/schema/Customer__c.Street__c';
+import State from '@salesforce/schema/Customer__c.State__c';
+import City from '@salesforce/schema/Customer__c.City__c';
+import Pincode from '@salesforce/schema/Customer__c.Pincode__c';
+import Country from '@salesforce/schema/Customer__c.Country__c';
 
 export default class LightningRecordFormCreateExampleLWC extends LightningElement {
-    // objectApiName is "Account" when this component is placed on an account record page
     @api objectApiName;
-    fields = [NAME_FIELD, PHONE_FIELD, EMAIL_FIELD, PRODUCT, ADDRESS];
+    fields = [
+        Name,
+        Phone,
+        Email,
+        Product,
+        Street,
+        State,
+        City,
+        Pincode,
+        Country
+    ];
     handleSuccess(event) {
         const evt = new ShowToastEvent({
             title: 'Account created',
