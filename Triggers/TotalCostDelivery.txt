@@ -1,0 +1,19 @@
+trigger TotalCostDelivery on Payment__c (after insert) 
+{
+    List<Delivery__c> delivery=new List<Delivery__c>();
+    List<Id> DelID=new List<Id>();
+    for(Payment__c pay:Trigger.new)
+    {
+        DelID.add(pay.Delivery__c);
+    }
+    List<Delivery__c> deliverylist=[select Id,Total_Cost__c from Delivery__c where Id in :DelID];
+     for(Payment__c pay:Trigger.new)
+    {
+       for(Delivery__c del:deliverylist)
+       {
+           del.Total_Cost__c=pay.Total_Cost__c;
+           delivery.add(del);
+       }
+    }
+    update delivery;
+}

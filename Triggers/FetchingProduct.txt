@@ -1,0 +1,24 @@
+trigger FetchingProduct on Customer__c (after update) 
+{
+    List<Delivery__c> Delivery=new List<Delivery__c>();
+    List<String> product_name=new List<String>();
+    List<Id>customerID=new List<Id>();
+    for(Customer__c customer:Trigger.New)
+    {
+        customerID.add(customer.Id);
+        product_name.add(customer.Product_Name__c);
+    }
+    List<Product_Detail__c> original_products=[select Id,Name,Product_Price__c,Available__c from  Product_Detail__c where Name in:product_name];
+    
+    List<Delivery__c> delivery_list=[select Id,Name,Customer__c,Product_Name__c ,Product_Detail__c from Delivery__c where (Customer__c in : customerID and Product_Name__c in :product_name)];
+    for(Delivery__c deliveryItem:delivery_list)
+    {
+        for(Product_Detail__c product:original_products)
+        {
+            deliveryItem.Product_Detail__c=product.Id;
+            deliveryItem.Product_Price__c=product.Product_Price__c;
+            Delivery.add(deliveryItem);
+        }
+    }
+    update Delivery;
+}

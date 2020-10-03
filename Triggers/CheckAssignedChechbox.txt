@@ -1,0 +1,17 @@
+trigger CheckAssignedCheckbox on Delivery__c (after insert) 
+{
+    List<Customer__c>updated_customer=new List<Customer__c>();
+    List<Id> Customers=new List<Id>();
+    for(Delivery__c del:Trigger.New)
+    {
+        Customers.add(del.Customer__c);
+    }
+    List<Customer__c> customer_list=[select Id,Name,Delivery_Created__c from Customer__c where Id in :Customers];
+    for(Customer__c customer_Obj:customer_list)
+    {
+        customer_Obj.Delivery_Created__c=true;
+        updated_customer.add(customer_Obj);
+    }
+    update updated_customer;
+
+}
