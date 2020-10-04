@@ -1,36 +1,33 @@
-<apex:page standardStylesheets="false" showHeader="false" controller="RetriveCustomer" renderAs="pdf">
-    
-    <div style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">
-        <h2>Order Details</h2>   
-        <table style="border-collapse: collapse;width: 100%;">
-            <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">
-                <th>Customer Name</th>
-                <th>Phone</th>
-                <th>Address</th>
-            </tr> 
+<apex:page standardStylesheets="true" showHeader="true" controller="RetriveCustomer" >
+    <apex:form >
+        <apex:pageBlock title="ORDER DETAILS">
             <apex:repeat value="{!orderList}" var="acc">
-                <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">
-                    <td style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">{!acc.Customer_Name__c}</td>
-                    <td style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">{!acc.Phone__c}</td>
-                    <td style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">{!acc.Address__c}</td>     
-                </tr>
-            </apex:repeat>    
-        </table>  
-         <table style="border-collapse: collapse;width: 100%;">
-            <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">
-                <th>Product Name</th>
-                <th>Product Price</th>
-                <th>Delivery Charge</th>
-                <th>Total Price</th>
-            </tr> 
-            <apex:repeat value="{!orderList}" var="acc">
-                <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">
-                    <td style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">{!acc.Product_Name__c}</td>
-                    <td style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">{!acc.Product_Price__c}</td>
-                    <td style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">{!acc.Delivery_Charge__c}</td>   
-                    <td style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">{!acc.Total_Cost__c}</td>  
-                </tr>
-            </apex:repeat>    
-        </table>  
-    </div>
+                <apex:pageBlockSection title="Customer Details">
+                    <apex:outputField label="Customer Name : " value="{! acc.Customer_Name__c}"/>
+                    <apex:outputField label="Phone : " value="{! acc.Phone__c}"/>
+                    <apex:outputField label="Street : " value="{! acc.Street__c}"/>
+                    <apex:outputField label="City : " value="{! acc.City__c}"/> 
+                </apex:pageBlockSection>
+            </apex:repeat>                
+            
+            <apex:pageBlockSection title="Product details">
+                <table style="border-collapse: collapse;width: 100%;">
+                    <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">
+                        <th style="padding:6px;text-align:center;border-bottom:2px solid #ddd;"> Product Name </th>
+                        <th style="padding:6px;text-align:center;border-bottom:2px solid #ddd;"> Product Price </th>
+                        <th style="padding:6px;text-align:center;border-bottom:2px solid #ddd;"> Shipping Charge</th> 
+                        <th style="padding:6px;text-align:center;border-bottom:2px solid #ddd;"> Total Price </th>
+                    </tr>
+                    <apex:repeat value="{!orderList}" var="acc">
+                        <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #ddd;">
+                            <td style="padding:6px;text-align:center;border-bottom:2px solid #ddd;">{! acc.Product_Name__c}</td>
+                            <td style="padding:6px;text-align:center;border-bottom:2px solid #ddd;">{! acc.Product_Price__c}</td>
+                            <td style="padding:6px;text-align:center;border-bottom:2px solid #ddd;">{! acc.Shipping_Charge__c}</td>
+                            <td style="padding:6px;text-align:center;border-bottom:2px solid #ddd;">{! acc.Total_Cost__c}</td>                            
+                        </tr>
+                    </apex:repeat>       
+                </table>
+            </apex:pageBlockSection> 
+        </apex:pageBlock> 
+    </apex:form>
 </apex:page>
