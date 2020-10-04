@@ -1,6 +1,6 @@
 public class RetriveCustomer {
     public List<Delivery__c> orderList{get;set;}
      public RetriveCustomer() {
-        orderList = [Select id,Customer_Name__c,Product_Price__c, Total_Cost__c from Delivery__c];
+        orderList = [Select id,Customer_Name__c,Phone__c,Street__c,City__c,Product_Name__c,Product_Price__c, Total_Cost__c, Shipping_Charge__c from Delivery__c];
     }   
 }
